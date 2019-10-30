@@ -25,6 +25,7 @@ func main() {
 	}
 
 	data["timestamp"] = time.Now().Unix()
+	data["app"] = "gocode"
 
 	b, err = json.Marshal(data)
 	if err != nil {
@@ -46,6 +47,14 @@ func main() {
 			os.Exit(1)
 		}
 		resp.Body.Close()
+	}
+
+	if _, ok := data["panic"]; ok {
+		panic("should panic")
+	}
+
+	if _, ok := data["timeout"]; ok {
+		<-time.NewTimer(time.Second * 30).C
 	}
 
 	if err := ioutil.WriteFile(file, b, 0644); err != nil {
